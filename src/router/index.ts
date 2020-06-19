@@ -4,7 +4,7 @@ import Home from '../views/Home.vue'
 
 Vue.use(VueRouter)
 
-  const routes: Array<RouteConfig> = [
+const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'Home',
@@ -13,9 +13,13 @@ Vue.use(VueRouter)
 ]
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "hash",
   base: process.env.BASE_URL,
   routes
+})
+
+document.addEventListener("keydown", e => {
+  e.code
 })
 
 export default router

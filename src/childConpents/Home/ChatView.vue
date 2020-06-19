@@ -136,7 +136,7 @@
           />
         </svg>
       </div>
-      <textarea></textarea>
+      <textarea v-model="cahtContent" @keydown="enterSendMessage"></textarea>
       <!-- <div contenteditable="true" @keydown="enterSendMessage" v-model="message"></div> -->
     </div>
   </div>
@@ -153,6 +153,8 @@ export default class ChatView extends Vue {
   private Data: ObjectTyle = {};
   private message: string | undefined = "1";
   @Prop() private viewData: ChangeViewResult | undefined;
+
+  private cahtContent: string | undefined = "";
   // 第一次挂载实例完成时触发
   public mounted() {
     this.getData();
@@ -167,9 +169,8 @@ export default class ChatView extends Vue {
   }
 
   public enterSendMessage(e: KeyboardEvent) {
-    if (e.code == "Enter") {
-      //   sendMessage(e.target);
-      console.log(e);
+    if (!e.shiftKey && e.keyCode == 13 && (this.cahtContent as string).trim() != "") {
+      alert("发送了：" + this.cahtContent);
     }
   }
 }
