@@ -24,47 +24,19 @@
         </svg>
       </div>
     </header>
-    <div class="dialogue-list">
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-      <div>ak</div>
-    </div>
-    <div class="editMessage">
+    <div class="dialogue-list"></div>
+    <div
+      class="editMessage"
+      :style="{
+        'height': messageWindowHeight + 'px',
+        'min-height': MESSAGE_WINDOW_MINHEIGHT + 'px',
+        'max-height': MESSAGE_WINDOW_MAXHEIGHT + 'px'
+      }"
+    >
+      <!-- 拖动改变窗口大小 -->
+      <div class="ResizeMessageWindow" @mousedown="changeDownStatus">
+        <div></div>
+      </div>
       <div class="func">
         <svg
           t="1592144017138"
@@ -192,22 +164,60 @@ export default class ChatView extends Vue {
   @Prop() private viewData: ChangeViewResult | undefined;
 
   private cahtContent: string | undefined = "";
+  private downMouse: boolean | undefined = false;
+  private messageWindowHeight: number | undefined = 150;
+  private oldY: number | undefined = 0;
+
+  private MESSAGE_WINDOW_MINHEIGHT: number | undefined = 115;
+  private MESSAGE_WINDOW_MAXHEIGHT: number | undefined = 300;
+
+
   // 第一次挂载实例完成时触发
   public mounted() {
+    // 取消可拖动状态
+    document.addEventListener("mouseup", (e: MouseEvent) => {
+      this.downMouse = false;
+    });
+    document.addEventListener("mousemove", this.moveWindow);
+
     this.getData();
   }
+
   // 视图更新时触发
   public updated() {
     this.getData();
   }
+
   // 更新数据
   public getData() {
     this.Data = CHAT_LIST_DATA[(this.viewData as ChangeViewResult).ID - 1];
   }
 
   public enterSendMessage(e: KeyboardEvent) {
-    if (!e.shiftKey && e.keyCode == 13 && (this.cahtContent as string).trim() != "") {
+    if (
+      !e.shiftKey &&
+      e.keyCode == 13 &&
+      (this.cahtContent as string).trim() != ""
+    ) {
       alert("发送了：" + this.cahtContent);
+    }
+  }
+
+  private changeDownStatus() {
+    this.downMouse = true;
+  }
+
+  private moveWindow(e: MouseEvent) {
+    if (this.downMouse) {
+      if ((this.messageWindowHeight as number) >= (this.MESSAGE_WINDOW_MAXHEIGHT as number))
+        this.messageWindowHeight = this.MESSAGE_WINDOW_MAXHEIGHT;
+      else if ((this.messageWindowHeight as number) <= (this.MESSAGE_WINDOW_MINHEIGHT as number))
+        this.messageWindowHeight = this.MESSAGE_WINDOW_MINHEIGHT;
+      else if ((this.oldY as number) < e.clientY)
+        (this.messageWindowHeight as number)--;
+      else if ((this.oldY as number) > e.clientY)
+        (this.messageWindowHeight as number)++;
+      this.oldY = e.clientY;
     }
   }
 }
@@ -217,18 +227,15 @@ export default class ChatView extends Vue {
 $line-height-header: 60px;
 
 .ChatView {
-  // display: grid;
-  // grid-auto-columns: auto;
-  // grid-auto-rows: $line-height-header auto 200px;
   display: flex;
   flex-direction: column;
-height: 100vh;
+  background: rgb(243, 243, 243);
 }
 
 .height {
   width: 100%;
   height: $line-height-header;
-  background: rgb(251, 251, 251);
+  background: rgb(243, 243, 243);
   display: flex;
   justify-content: space-between;
   box-sizing: border-box;
@@ -236,10 +243,9 @@ height: 100vh;
   justify-items: center;
   user-select: none;
   line-height: $line-height-header;
-  border-bottom: 1px solid rgb(243, 243, 243);
-   flex-shrink: 0;
+  border-bottom: 1px solid rgb(225, 226, 225);
+  flex-shrink: 0;
   flex-grow: 0;
-
 
   .chat-object-name {
     display: inline;
@@ -248,19 +254,18 @@ height: 100vh;
 }
 
 .dialogue-list {
-  //  max-height: auto;
-   box-sizing: border-box;
-   padding: 15px;
-  //  grid: 200px / auto-flow;
-   height: auto;
-   overflow: auto;
-   flex-grow: 1;
-   flex-shrink: 1;
+  box-sizing: border-box;
+  padding: 15px;
+  height: auto;
+  overflow: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
 }
 
 .editMessage {
   border-top: 1px solid rgb(243, 243, 243);
-  height: 200px;
+  // height: 170px;
+  min-height: 110px;
   box-sizing: border-box;
   padding: 15px;
   display: grid;
@@ -268,7 +273,22 @@ height: 100vh;
   background: rgb(251, 251, 251);
   flex-shrink: 0;
   flex-grow: 0;
+  background: rgb(243, 243, 243);
+  position: relative;
 
+  .ResizeMessageWindow {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    cursor: move;
+    padding: 3px 0;
+
+    div {
+      background: rgb(225, 226, 225);
+      width: 100%;
+      height: 1px;
+    }
+  }
 
   textarea {
     height: 100%;
@@ -289,4 +309,6 @@ height: 100vh;
     }
   }
 }
+
+//
 </style>
