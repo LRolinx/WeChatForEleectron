@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<style>
+<style lang="scss">
 * {
   padding: 0;
   margin: 0;
@@ -22,6 +22,5 @@ html,
 body,
 #app {
   height: 100%;
-  background: rgba(0, 0, 0, 0);
 }
 </style>

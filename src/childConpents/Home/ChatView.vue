@@ -25,7 +25,44 @@
       </div>
     </header>
     <div class="dialogue-list">
-       <div></div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
+      <div>ak</div>
     </div>
     <div class="editMessage">
       <div class="func">
@@ -180,9 +217,12 @@ export default class ChatView extends Vue {
 $line-height-header: 60px;
 
 .ChatView {
-  display: grid;
-  grid-auto-columns: auto;
-  grid-auto-rows: $line-height-header auto 200px;
+  // display: grid;
+  // grid-auto-columns: auto;
+  // grid-auto-rows: $line-height-header auto 200px;
+  display: flex;
+  flex-direction: column;
+height: 100vh;
 }
 
 .height {
@@ -197,6 +237,9 @@ $line-height-header: 60px;
   user-select: none;
   line-height: $line-height-header;
   border-bottom: 1px solid rgb(243, 243, 243);
+   flex-shrink: 0;
+  flex-grow: 0;
+
 
   .chat-object-name {
     display: inline;
@@ -205,20 +248,27 @@ $line-height-header: 60px;
 }
 
 .dialogue-list {
-   max-height: auto;
+  //  max-height: auto;
    box-sizing: border-box;
    padding: 15px;
-   grid: 200px / auto-flow;
+  //  grid: 200px / auto-flow;
+   height: auto;
+   overflow: auto;
+   flex-grow: 1;
+   flex-shrink: 1;
 }
 
 .editMessage {
   border-top: 1px solid rgb(243, 243, 243);
-  height: 200;
+  height: 200px;
   box-sizing: border-box;
   padding: 15px;
   display: grid;
   grid-auto-rows: 30px auto;
   background: rgb(251, 251, 251);
+  flex-shrink: 0;
+  flex-grow: 0;
+
 
   textarea {
     height: 100%;
