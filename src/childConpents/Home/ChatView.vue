@@ -24,10 +24,19 @@
         </svg>
       </div>
     </header>
-    <div class="dialogue-list">
-       <div></div>
-    </div>
-    <div class="editMessage">
+    <div class="dialogue-list"></div>
+    <div
+      class="editMessage"
+      :style="{
+        'height': messageWindowHeight + 'px',
+        'min-height': MESSAGE_WINDOW_MINHEIGHT + 'px',
+        'max-height': MESSAGE_WINDOW_MAXHEIGHT + 'px'
+      }"
+    >
+      <!-- 拖动改变窗口大小 -->
+      <div class="ResizeMessageWindow" @mousedown="changeDownStatus">
+        <div></div>
+      </div>
       <div class="func">
         <svg
           t="1592144017138"
@@ -136,7 +145,7 @@
           />
         </svg>
       </div>
-      <textarea></textarea>
+      <textarea v-model="cahtContent" @keydown="enterSendMessage"></textarea>
       <!-- <div contenteditable="true" @keydown="enterSendMessage" v-model="message"></div> -->
     </div>
   </div>
@@ -153,23 +162,54 @@ export default class ChatView extends Vue {
   private Data: ObjectTyle = {};
   private message: string | undefined = "1";
   @Prop() private viewData: ChangeViewResult | undefined;
+
+  private cahtContent: string | undefined = "";
+  private downMouse: boolean | undefined = false;
+
+  private messageWindowHeight: number | undefined = 150;
+
+  private MESSAGE_WINDOW_MINHEIGHT: number | undefined = 115;
+  private MESSAGE_WINDOW_MAXHEIGHT: number | undefined = 300;
+
+
   // 第一次挂载实例完成时触发
   public mounted() {
+    // 取消可拖动状态
+    document.addEventListener("mouseup", (e: MouseEvent) => {
+      this.downMouse = false;
+    });
+    document.addEventListener("mousemove", this.moveWindow);
+
     this.getData();
   }
+
   // 视图更新时触发
   public updated() {
     this.getData();
   }
+
   // 更新数据
   public getData() {
     this.Data = CHAT_LIST_DATA[(this.viewData as ChangeViewResult).ID - 1];
   }
 
   public enterSendMessage(e: KeyboardEvent) {
-    if (e.code == "Enter") {
-      //   sendMessage(e.target);
-      console.log(e);
+    if (
+      !e.shiftKey &&
+      e.keyCode == 13 &&
+      (this.cahtContent as string).trim() != ""
+    ) {
+      alert("发送了：" + this.cahtContent);
+    }
+  }
+
+  private changeDownStatus(e: MouseEvent) {
+    this.downMouse = true;
+  }
+
+  private moveWindow(e: MouseEvent) {
+    if (this.downMouse) {
+      (this.messageWindowHeight as number) = document.body.clientHeight-e.clientY//网页的上下高度
     }
   }
 }
@@ -179,15 +219,15 @@ export default class ChatView extends Vue {
 $line-height-header: 60px;
 
 .ChatView {
-  display: grid;
-  grid-auto-columns: auto;
-  grid-auto-rows: $line-height-header auto 200px;
+  display: flex;
+  flex-direction: column;
+  background: rgb(243, 243, 243);
 }
 
 .height {
   width: 100%;
   height: $line-height-header;
-  background: rgb(251, 251, 251);
+  background: rgb(243, 243, 243);
   display: flex;
   justify-content: space-between;
   box-sizing: border-box;
@@ -195,7 +235,9 @@ $line-height-header: 60px;
   justify-items: center;
   user-select: none;
   line-height: $line-height-header;
-  border-bottom: 1px solid rgb(243, 243, 243);
+  border-bottom: 1px solid rgb(225, 226, 225);
+  flex-shrink: 0;
+  flex-grow: 0;
 
   .chat-object-name {
     display: inline;
@@ -204,20 +246,41 @@ $line-height-header: 60px;
 }
 
 .dialogue-list {
-   max-height: auto;
-   box-sizing: border-box;
-   padding: 15px;
-   grid: 200px / auto-flow;
+  box-sizing: border-box;
+  padding: 15px;
+  height: auto;
+  overflow: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
 }
 
 .editMessage {
   border-top: 1px solid rgb(243, 243, 243);
-  height: 200;
+  // height: 170px;
+  min-height: 110px;
   box-sizing: border-box;
   padding: 15px;
   display: grid;
   grid-auto-rows: 30px auto;
   background: rgb(251, 251, 251);
+  flex-shrink: 0;
+  flex-grow: 0;
+  background: rgb(243, 243, 243);
+  position: relative;
+
+  .ResizeMessageWindow {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    cursor: move;
+    padding: 3px 0;
+
+    div {
+      background: rgb(225, 226, 225);
+      width: 100%;
+      height: 1px;
+    }
+  }
 
   textarea {
     height: 100%;
@@ -238,4 +301,6 @@ $line-height-header: 60px;
     }
   }
 }
+
+//
 </style>

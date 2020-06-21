@@ -2,11 +2,14 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+import axios from "./config/axios.config"
+import VueAxios from "vue-axios"
 
 Vue.config.productionTip = false
 
+Vue.use(VueAxios, axios);
 Vue.use(ElementUI);
 
 new Vue({
