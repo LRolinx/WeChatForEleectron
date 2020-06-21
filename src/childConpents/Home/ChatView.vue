@@ -165,8 +165,8 @@ export default class ChatView extends Vue {
 
   private cahtContent: string | undefined = "";
   private downMouse: boolean | undefined = false;
+
   private messageWindowHeight: number | undefined = 150;
-  private oldY: number | undefined = 0;
 
   private MESSAGE_WINDOW_MINHEIGHT: number | undefined = 115;
   private MESSAGE_WINDOW_MAXHEIGHT: number | undefined = 300;
@@ -203,21 +203,13 @@ export default class ChatView extends Vue {
     }
   }
 
-  private changeDownStatus() {
+  private changeDownStatus(e: MouseEvent) {
     this.downMouse = true;
   }
 
   private moveWindow(e: MouseEvent) {
     if (this.downMouse) {
-      if ((this.messageWindowHeight as number) >= (this.MESSAGE_WINDOW_MAXHEIGHT as number))
-        this.messageWindowHeight = this.MESSAGE_WINDOW_MAXHEIGHT;
-      else if ((this.messageWindowHeight as number) <= (this.MESSAGE_WINDOW_MINHEIGHT as number))
-        this.messageWindowHeight = this.MESSAGE_WINDOW_MINHEIGHT;
-      else if ((this.oldY as number) < e.clientY)
-        (this.messageWindowHeight as number)--;
-      else if ((this.oldY as number) > e.clientY)
-        (this.messageWindowHeight as number)++;
-      this.oldY = e.clientY;
+      (this.messageWindowHeight as number) = document.body.clientHeight-e.clientY//网页的上下高度
     }
   }
 }

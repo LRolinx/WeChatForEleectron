@@ -56,6 +56,7 @@ export default class ChatList extends Vue {
 #ChatList {
   user-select: none;
   max-height: 100%;
+  background: rgb(251, 251, 251);
   overflow: hidden;
 
   .SELECT {
